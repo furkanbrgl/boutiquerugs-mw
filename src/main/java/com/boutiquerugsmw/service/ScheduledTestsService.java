@@ -1,8 +1,12 @@
 package com.boutiquerugsmw.service;
 
 import com.boutiquerugsmw.doa.ScheduledTestsDao;
+import com.boutiquerugsmw.model.MailContent;
 import com.boutiquerugsmw.model.ScheduledTestModel;
 import com.boutiquerugsmw.model.SeleniumInstanceModel;
+import com.boutiquerugsmw.util.Constants;
+import com.boutiquerugsmw.util.DateUtil;
+import com.boutiquerugsmw.util.MailUtil;
 import com.boutiquerugsmw.util.PropertyNames;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.mail.MessagingException;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,8 +35,19 @@ public class ScheduledTestsService {
     @Value(PropertyNames.SCHEDULED_TESTS_PROJECT_PATH)
     private String scheduledTestsProjectPath;
 
+    @Value(PropertyNames.FROM_EMAIL_ADDRESS)
+    private String fromEmailAddress;
+
+    @Value(PropertyNames.FROM_EMAIL_USER_PASSWORD)
+    private String fromEmailUserPassword;
+
+    @Autowired
+    private MailUtil mailUtil;
+
     @Async
     public void startTest(ScheduledTestModel scheduledTestModel, SeleniumInstanceModel seleniumInstance) throws MessagingException {
+
+        MailContent mailContent = getInitialMailContent(new MailContent(),scheduledTestModel);
 
         StringBuilder mavenLog = new StringBuilder();
         StringBuilder message = new StringBuilder();
@@ -50,11 +64,13 @@ public class ScheduledTestsService {
 //            this.scheduledTestsDao.updateScheduledTestStartTime(scheduledTestModel.getId());
 //            this.scheduledTestsDao.updateScheduledTestHostId(scheduledTestModel.getId(), seleniumInstance.getHostId());
 
-            logger.info("Test start info mail sending to  = "+ scheduledTestModel.getSchedulingUserEMail());
+            logger.info("Test start info mail sending to  = "+ scheduledTestModel.getTestResultEmailAddress());
             //Send an e-mail
             logger.info("Maven command will run .. ");
 
-            Process p = Runtime.getRuntime().exec(this.generateMavenCommand(scheduledTestModel, seleniumInstance));
+            String[] mvnCommand = this.generateMavenCommand(scheduledTestModel, seleniumInstance);
+
+            Process p = Runtime.getRuntime().exec(mvnCommand);
             br = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
             while ((mavenOutputLine = br.readLine()) != null) {
@@ -95,15 +111,53 @@ public class ScheduledTestsService {
             mavenLog.append(message.toString());
             mavenLog.append("<br/></body></html>");
 
-            if (numTestRun == 0 || numTestRun == -1 || numError > 0 || numFailure > 0) {
-//                this.scheduledTestsDao.updateScheduledTestStatus(Constants.SCENARIO_STATUS_FAILED, scheduledTestModel.getId());
-            } else {
-//                this.scheduledTestsDao.updateScheduledTestStatus(Constants.SCENARIO_STATUS_COMPLETED, scheduledTestModel.getId());
+            //          this.scheduledTestsDao.updateScheduledTestEndTime(scheduledTestModel.getId());
+            File file = new File(this.getHtmlLogAttachmentPath(scheduledTestModel.getId()));
+            BufferedWriter writer = null;
+            try {
+                writer = new BufferedWriter(new FileWriter(file));
+                writer.write(mavenLog.toString());
+            } finally {
+                if (writer != null) writer.close();
             }
 
-//          this.scheduledTestsDao.updateScheduledTestEndTime(scheduledTestModel.getId());
-//          this.scheduledTestsDao.insertScheduledTestLog(scheduledTestModel.getId(), mavenLog.toString(), this.getHtmlLogUrl(scheduledTestModel.getId()), this.getReportUrl(scheduledTestModel.getId()));
+            if (numTestRun == 0 || numTestRun == -1 || numError > 0 || numFailure > 0) {
+//                this.scheduledTestsDao.updateScheduledTestStatus(Constants.SCENARIO_STATUS_FAILED, scheduledTestModel.getId());
+                mailContent = getFinalMailContent(mailContent, mvnCommand[2].toString(),Constants.SCENARIO_STATUS_FAILED);
 
+                this.mailUtil.sendMail(fromEmailAddress,
+                        new String[]{scheduledTestModel.getTestResultEmailAddress()},
+                        scheduledTestModel.getTestClassName() + " Scenario's finished. " + "Status : " + Constants.SCENARIO_STATUS_FAILED,
+                        mailContent, scheduledTestModel,
+                        new String[]{
+                                this.getReportAttachmentPath(scheduledTestModel.getId()),
+                                this.getHtmlLogAttachmentPath(scheduledTestModel.getId())
+                        });
+            } else {
+//                this.scheduledTestsDao.updateScheduledTestStatus(Constants.SCENARIO_STATUS_COMPLETED, scheduledTestModel.getId());
+                mailContent = getFinalMailContent(mailContent, mvnCommand[2].toString(), Constants.SCENARIO_STATUS_COMPLETED);
+
+
+                this.mailUtil.sendMail(fromEmailAddress,
+                        new String[]{scheduledTestModel.getTestResultEmailAddress()},
+                        scheduledTestModel.getTestClassName() + " Scenario's finished. " + "Status : " + Constants.SCENARIO_STATUS_COMPLETED,
+                        mailContent,scheduledTestModel,
+                        new String[]{
+                                this.getReportAttachmentPath(scheduledTestModel.getId()),
+                                this.getHtmlLogAttachmentPath(scheduledTestModel.getId())
+                        });
+            }
+
+/*
+            this.mailUtil.sendMail("brgl.furkan@gmail.com",
+                    new String[]{scheduledTestModel.getSchedulingUserEMail()},
+                    "QA - " + scheduledTestModel.getNodeName() + " Test Scenario's finished.",
+                    "",
+                    new String[]{
+                            this.getReportAttachmentPath(scheduledTestModel.getId()),
+                            this.getHtmlLogAttachmentPath(scheduledTestModel.getId())
+                    });
+*/
             p.waitFor();
 
         } catch (Exception e) {
@@ -123,6 +177,25 @@ public class ScheduledTestsService {
             }
 
         }
+    }
+
+    private MailContent getFinalMailContent(MailContent mailContent, String customResult, String testResult) {
+        mailContent.setTestFinishTime(DateUtil.formatDateWithTime(new Date()));
+        long diff = System.currentTimeMillis() - mailContent.getTestStartMillis();
+        mailContent.setTestDuration(DateUtil.formatDateWithTime(new Date(diff)));
+        mailContent.setTestResult(testResult);
+        mailContent.setCustomResult(customResult);
+
+        return mailContent;
+    }
+
+    private MailContent getInitialMailContent(MailContent mailContent, ScheduledTestModel scheduledTestModel) {
+        mailContent.setTestID(scheduledTestModel.getTestId());
+        mailContent.setNodeId(scheduledTestModel.getNodeId());
+        mailContent.setNodeName(scheduledTestModel.getNodeName());
+        mailContent.setTestStartTime(DateUtil.formatDateWithTime(new Date()));
+
+        return mailContent;
     }
 
     private String[] generateMavenCommand(ScheduledTestModel scheduledTestModel, SeleniumInstanceModel seleniumInstance) throws MessagingException {
@@ -169,5 +242,31 @@ public class ScheduledTestsService {
         } catch (Exception ignored) {
         }
         return message;
+    }
+
+    //Screenshots will be taken here.
+    private String getReportAttachmentPath(long id) {
+
+        StringBuilder reportAttachmentPath = new StringBuilder()
+                .append("C:\\Users\\brglf\\OneDrive\\Desktop\\New folder\\")
+                .append("ITSS")
+//                .append("\\")
+//                .append(id)
+                .append(".docx");
+
+        return reportAttachmentPath.toString();
+
+    }
+
+    private String getHtmlLogAttachmentPath(long id) {
+
+        StringBuilder reportAttachmentPath = new StringBuilder()
+                .append("C:\\Users\\brglf\\OneDrive\\Desktop\\New folder\\")
+//                .append("testId")
+//                .append("\\")
+                .append(id)
+                .append(".html");
+
+        return reportAttachmentPath.toString();
     }
 }

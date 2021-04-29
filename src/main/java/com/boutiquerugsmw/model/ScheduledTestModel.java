@@ -5,11 +5,11 @@ import java.util.Map;
 public class ScheduledTestModel {
 
     private long id;
-    private long testSetId;
+    private long testId;
     private long nodeId;
     private String nodeName;
     private String testClassName;
-    private String schedulingUserEMail;
+    private String testResultEmailAddress;
     private Map<String, String> testParams;
 
     public long getId() {
@@ -20,12 +20,12 @@ public class ScheduledTestModel {
         this.id = id;
     }
 
-    public long getTestSetId() {
-        return testSetId;
+    public long getTestId() {
+        return testId;
     }
 
-    public void setTestSetId(long testSetId) {
-        this.testSetId = testSetId;
+    public void setTestId(long testId) {
+        this.testId = testId;
     }
 
     public long getNodeId() {
@@ -52,12 +52,12 @@ public class ScheduledTestModel {
         this.testParams = testParams;
     }
 
-    public String getSchedulingUserEMail() {
-        return schedulingUserEMail;
+    public String getTestResultEmailAddress() {
+        return testResultEmailAddress;
     }
 
-    public void setSchedulingUserEMail(String schedulingUserEMail) {
-        this.schedulingUserEMail = schedulingUserEMail;
+    public void setTestResultEmailAddress(String testResultEmailAddress) {
+        this.testResultEmailAddress = testResultEmailAddress;
     }
 
     public String getNodeName() {

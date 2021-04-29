@@ -30,21 +30,20 @@ public class ScheduledTestsDao {
     private String testScenarioClassName;
 
 
-
     public ScheduledTestModel getScheduledTests() {
 
         ScheduledTestModel scheduledTestModel = new ScheduledTestModel();
 
-        scheduledTestModel.setId(999999);
-        scheduledTestModel.setTestSetId(System.currentTimeMillis());
+        scheduledTestModel.setId(System.currentTimeMillis());
+        scheduledTestModel.setTestId(System.currentTimeMillis());
         scheduledTestModel.setNodeId(999999);
-        scheduledTestModel.setNodeName("999999NodeNAme");
-        scheduledTestModel.setSchedulingUserEMail("Who starts the test ?");
+        scheduledTestModel.setNodeName("999999NodeName");
+        scheduledTestModel.setTestResultEmailAddress(testResultEmailAddress);
 
         //comes from db by testId
         scheduledTestModel.setScenarioClassName(testScenarioClassName);
 
-        scheduledTestModel.setTestParams(this.getScheduledTestParams(scheduledTestModel.getTestSetId()));
+        scheduledTestModel.setTestParams(this.getScheduledTestParams(scheduledTestModel.getTestId()));
 
         return scheduledTestModel;
     }

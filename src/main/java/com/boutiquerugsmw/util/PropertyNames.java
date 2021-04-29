@@ -22,4 +22,9 @@ public class PropertyNames {
 	public static final String TEST_RESULT_EMAIL_ADDRESS = "${test.result.email.address}";
 	public static final String TEST_SCENARIO_CLASS_NAME = "${test.scenario.class.name}";
 
+	public static final String FROM_EMAIL_ADDRESS = "${from.email.address}";
+	public static final String FROM_EMAIL_USER_PASSWORD = "${from.email.user.password}";
+
+
+
 }
