@@ -9,7 +9,8 @@ public class MailContent {
     private String testStartTime;
     private String testFinishTime;
     private String testDuration;
-    private String testResult;
+    private String testResultStatus;
+    private String testResultInfo;
     private String customResult;
     private long testStartMillis;
 
@@ -37,8 +38,8 @@ public class MailContent {
         this.testDuration = testDuration;
     }
 
-    public String getTestResult() {
-        return testResult;
+    public String getTestResultStatus() {
+        return testResultStatus;
     }
 
     public long getTestID() {
@@ -73,8 +74,8 @@ public class MailContent {
         this.nodeName = nodeName;
     }
 
-    public void setTestResult(String testResult) {
-        this.testResult = testResult;
+    public void setTestResultStatus(String testResultStatus) {
+        this.testResultStatus = testResultStatus;
     }
 
     public String getCustomResult() {
@@ -83,6 +84,14 @@ public class MailContent {
 
     public void setCustomResult(String customResult) {
         this.customResult = customResult;
+    }
+
+    public String getTestResultInfo() {
+        return testResultInfo;
+    }
+
+    public void setTestResultInfo(String testResultInfo) {
+        this.testResultInfo = testResultInfo;
     }
 
     /**
@@ -97,7 +106,9 @@ public class MailContent {
                 "Test Start Time : " + this.getTestStartTime() + System.lineSeparator() +
                 "Test Finish Time : " + this.getTestFinishTime() + System.lineSeparator() +
                 "Test Duration : " + this.getTestDuration() + System.lineSeparator() +
-                "Test Result Status : " + this.getTestResult() + System.lineSeparator() +
+                System.lineSeparator() +
+                "Test Add Info : " + this.getTestResultInfo() + System.lineSeparator() +
+                "Test Result Status : " + this.getTestResultStatus() + System.lineSeparator() +
                 System.lineSeparator() + System.lineSeparator() +
                 "Test Parameters : " + this.getCustomResult() + System.lineSeparator();
         return c;

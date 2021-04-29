@@ -123,7 +123,7 @@ public class ScheduledTestsService {
 
             if (numTestRun == 0 || numTestRun == -1 || numError > 0 || numFailure > 0) {
 //                this.scheduledTestsDao.updateScheduledTestStatus(Constants.SCENARIO_STATUS_FAILED, scheduledTestModel.getId());
-                mailContent = getFinalMailContent(mailContent, mvnCommand[2].toString(),Constants.SCENARIO_STATUS_FAILED);
+                mailContent = getFinalMailContent(mailContent, mvnCommand[2].toString(),Constants.SCENARIO_STATUS_FAILED, message.toString());
 
                 this.mailUtil.sendMail(fromEmailAddress,
                         new String[]{scheduledTestModel.getTestResultEmailAddress()},
@@ -135,7 +135,7 @@ public class ScheduledTestsService {
                         });
             } else {
 //                this.scheduledTestsDao.updateScheduledTestStatus(Constants.SCENARIO_STATUS_COMPLETED, scheduledTestModel.getId());
-                mailContent = getFinalMailContent(mailContent, mvnCommand[2].toString(), Constants.SCENARIO_STATUS_COMPLETED);
+                mailContent = getFinalMailContent(mailContent, mvnCommand[2].toString(), Constants.SCENARIO_STATUS_COMPLETED, message.toString());
 
 
                 this.mailUtil.sendMail(fromEmailAddress,
@@ -179,13 +179,13 @@ public class ScheduledTestsService {
         }
     }
 
-    private MailContent getFinalMailContent(MailContent mailContent, String customResult, String testResult) {
+    private MailContent getFinalMailContent(MailContent mailContent, String customResult, String testResultStatus, String addInfo) {
         mailContent.setTestFinishTime(DateUtil.formatDateWithTime(new Date()));
         long diff = System.currentTimeMillis() - mailContent.getTestStartMillis();
         mailContent.setTestDuration(DateUtil.formatDateWithTime(new Date(diff)));
-        mailContent.setTestResult(testResult);
+        mailContent.setTestResultStatus(testResultStatus);
         mailContent.setCustomResult(customResult);
-
+        mailContent.setTestResultInfo(addInfo);
         return mailContent;
     }
 
