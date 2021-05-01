@@ -6,8 +6,12 @@ public class PropertyNames {
 
 	public static final String SCHEDULED_TESTS_ENVIRONMENT = "${scheduled.tests.environment}";
 	public static final String SCHEDULED_TESTS_PROJECT_PATH = "${scheduled.tests.project.path}";
-//	public static final String SCHEDULED_TESTS_FILE_PATH = "${scheduled.tests.file.path}";
-//	public static final String SCHEDULED_TESTS_FILE_PATH_FTP = "${scheduled.tests.file.path.ftp}";
+
+	public static final String SCHEDULED_TESTS_LOG_PATH = "${scheduled.test.log.path}";
+//	public static final String SCHEDULED_TESTS_LOG_PATH_FTP = "${scheduled.tests.file.path.ftp}";
+
+	public static final String SCHEDULED_TESTS_REPORT_PATH = "${scheduled.test.report.path}";
+//	public static final String SCHEDULED_TESTS_REPORT_PATH_FTP = "${scheduled.tests.file.path.ftp}";
 
 //	public static final String SELENIUM_INSTANCES_IP_ADDRESSES = "${selenium.instances.ip.addresses}";
 //	public static final String SELENIUM_INSTANCES_HOST_IDS = "${selenium.instances.host.ids}";

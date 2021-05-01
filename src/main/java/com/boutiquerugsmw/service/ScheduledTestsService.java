@@ -35,6 +35,12 @@ public class ScheduledTestsService {
     @Value(PropertyNames.SCHEDULED_TESTS_PROJECT_PATH)
     private String scheduledTestsProjectPath;
 
+    @Value(PropertyNames.SCHEDULED_TESTS_LOG_PATH)
+    private String scheduledTestLogPath;
+
+    @Value(PropertyNames.SCHEDULED_TESTS_REPORT_PATH)
+    private String scheduledTestReportPath;
+
     @Value(PropertyNames.FROM_EMAIL_ADDRESS)
     private String fromEmailAddress;
 
@@ -213,7 +219,7 @@ public class ScheduledTestsService {
                 .append("-Dtest=")
                 .append(scheduledTestModel.getTestClassName())
                 .append(" ")
-                .append("-Dtestid=")
+                .append("-Dtest.id=")
                 .append(scheduledTestModel.getId())
                 .append(" ")
 //                .append("-Dserverip=")
@@ -245,26 +251,26 @@ public class ScheduledTestsService {
     }
 
     //Screenshots will be taken here.
-    private String getReportAttachmentPath(long id) {
+    private String getReportAttachmentPath(long testID) {
 
         StringBuilder reportAttachmentPath = new StringBuilder()
-                .append("C:\\Users\\brglf\\OneDrive\\Desktop\\New folder\\")
-                .append("ITSS")
-//                .append("\\")
-//                .append(id)
+                .append(scheduledTestReportPath)
+                .append(testID)
+                .append("\\")
+                .append(testID)
                 .append(".docx");
 
         return reportAttachmentPath.toString();
 
     }
 
-    private String getHtmlLogAttachmentPath(long id) {
+    private String getHtmlLogAttachmentPath(long testID) {
 
         StringBuilder reportAttachmentPath = new StringBuilder()
-                .append("C:\\Users\\brglf\\OneDrive\\Desktop\\New folder\\")
-//                .append("testId")
-//                .append("\\")
-                .append(id)
+                .append(scheduledTestLogPath)
+                .append(testID)
+                .append("\\")
+                .append(testID)
                 .append(".html");
 
         return reportAttachmentPath.toString();
