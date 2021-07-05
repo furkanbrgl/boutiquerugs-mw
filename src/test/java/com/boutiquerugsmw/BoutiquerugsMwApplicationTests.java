@@ -1,7 +1,6 @@
 package com.boutiquerugsmw;
 
-import com.boutiquerugsmw.core.ScheduledTests;
-import com.boutiquerugsmw.doa.ScheduledTestsDao;
+import com.boutiquerugsmw.repository.impl.ScheduledTestsDaoImpl;
 import com.boutiquerugsmw.model.SeleniumInstanceModel;
 import com.boutiquerugsmw.service.ScheduledTestsService;
 import org.junit.jupiter.api.Test;
@@ -17,11 +16,11 @@ class BoutiquerugsMwApplicationTests {
 	ScheduledTestsService scheduledTestsService;
 
 	@Autowired
-	ScheduledTestsDao scheduledTestsDao;
+	ScheduledTestsDaoImpl scheduledTestsRepositoryImpl;
 
 	@Test
 	void contextLoads() throws MessagingException {
-		scheduledTestsService.startTest(scheduledTestsDao.getScheduledTests(), new SeleniumInstanceModel());
+		scheduledTestsService.startTest(scheduledTestsRepositoryImpl.getScheduledTests(System.currentTimeMillis()), new SeleniumInstanceModel());
 	}
 
 }

@@ -3,6 +3,7 @@ package com.boutiquerugsmw;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -34,5 +35,6 @@ public class BoutiquerugsMwApplication {
 
 		return mailSender;
 	}
+
 
 }

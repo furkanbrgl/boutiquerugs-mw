@@ -2,7 +2,7 @@ package com.boutiquerugsmw.model;
 
 public class MailContent {
 
-    private long testID;
+    private Object testID;
     private long nodeId;
     private String nodeName;
 
@@ -42,11 +42,11 @@ public class MailContent {
         return testResultStatus;
     }
 
-    public long getTestID() {
+    public Object getTestID() {
         return testID;
     }
 
-    public void setTestID(long testID) {
+    public void setTestID(Object testID) {
         this.testID = testID;
     }
 

@@ -1,9 +1,9 @@
 package com.boutiquerugsmw.service;
 
-import com.boutiquerugsmw.doa.ScheduledTestsDao;
 import com.boutiquerugsmw.model.MailContent;
 import com.boutiquerugsmw.model.ScheduledTestModel;
 import com.boutiquerugsmw.model.SeleniumInstanceModel;
+import com.boutiquerugsmw.repository.impl.ScheduledTestsDaoImpl;
 import com.boutiquerugsmw.util.Constants;
 import com.boutiquerugsmw.util.DateUtil;
 import com.boutiquerugsmw.util.MailUtil;
@@ -27,7 +27,10 @@ public class ScheduledTestsService {
     private static final Logger logger = Logger.getLogger(ScheduledTestsService.class);
 
     @Autowired
-    private ScheduledTestsDao scheduledTestsDao;
+    private ScheduledTestsDaoImpl ScheduledTestsDao;
+
+    @Autowired
+    private MailUtil mailUtil;
 
     @Value(PropertyNames.SCHEDULED_TESTS_ENVIRONMENT)
     private String scheduledTestsEnvironment;
@@ -46,9 +49,6 @@ public class ScheduledTestsService {
 
     @Value(PropertyNames.FROM_EMAIL_USER_PASSWORD)
     private String fromEmailUserPassword;
-
-    @Autowired
-    private MailUtil mailUtil;
 
     @Async
     public void startTest(ScheduledTestModel scheduledTestModel, SeleniumInstanceModel seleniumInstance) throws MessagingException {
@@ -72,7 +72,8 @@ public class ScheduledTestsService {
 
             logger.info("Test start info mail sending to  = "+ scheduledTestModel.getTestResultEmailAddress());
             //Send an e-mail
-            logger.info("Maven command will run .. ");
+            ScheduledTestsDao.updateScheduledTestStatus(Constants.SCENARIO_STATUS_RUNNING, scheduledTestModel);
+            logger.info("Test status is set to Running...Maven command will run .. ");
 
             String[] mvnCommand = this.generateMavenCommand(scheduledTestModel, seleniumInstance);
 
@@ -118,7 +119,7 @@ public class ScheduledTestsService {
             mavenLog.append("<br/></body></html>");
 
             //          this.scheduledTestsDao.updateScheduledTestEndTime(scheduledTestModel.getId());
-            File file = new File(this.getHtmlLogAttachmentPath(scheduledTestModel.getId()));
+            File file = new File(this.getHtmlLogAttachmentPath(scheduledTestModel.getTestId()));
             BufferedWriter writer = null;
             try {
                 writer = new BufferedWriter(new FileWriter(file));
@@ -128,7 +129,7 @@ public class ScheduledTestsService {
             }
 
             if (numTestRun == 0 || numTestRun == -1 || numError > 0 || numFailure > 0) {
-//                this.scheduledTestsDao.updateScheduledTestStatus(Constants.SCENARIO_STATUS_FAILED, scheduledTestModel.getId());
+                ScheduledTestsDao.updateScheduledTestStatus(Constants.SCENARIO_STATUS_FAILED, scheduledTestModel);
                 mailContent = getFinalMailContent(mailContent, mvnCommand[2].toString(),Constants.SCENARIO_STATUS_FAILED, message.toString());
 
                 this.mailUtil.sendMail(fromEmailAddress,
@@ -136,11 +137,11 @@ public class ScheduledTestsService {
                         scheduledTestModel.getTestClassName() + " Scenario's finished. " + "Status : " + Constants.SCENARIO_STATUS_FAILED,
                         mailContent, scheduledTestModel,
                         new String[]{
-                                this.getReportAttachmentPath(scheduledTestModel.getId()),
-                                this.getHtmlLogAttachmentPath(scheduledTestModel.getId())
+                                this.getReportAttachmentPath(scheduledTestModel.getTestId()),
+                                this.getHtmlLogAttachmentPath(scheduledTestModel.getTestId())
                         });
             } else {
-//                this.scheduledTestsDao.updateScheduledTestStatus(Constants.SCENARIO_STATUS_COMPLETED, scheduledTestModel.getId());
+                ScheduledTestsDao.updateScheduledTestStatus(Constants.SCENARIO_STATUS_COMPLETED, scheduledTestModel);
                 mailContent = getFinalMailContent(mailContent, mvnCommand[2].toString(), Constants.SCENARIO_STATUS_COMPLETED, message.toString());
 
 
@@ -149,22 +150,14 @@ public class ScheduledTestsService {
                         scheduledTestModel.getTestClassName() + " Scenario's finished. " + "Status : " + Constants.SCENARIO_STATUS_COMPLETED,
                         mailContent,scheduledTestModel,
                         new String[]{
-                                this.getReportAttachmentPath(scheduledTestModel.getId()),
-                                this.getHtmlLogAttachmentPath(scheduledTestModel.getId())
+                                this.getReportAttachmentPath(scheduledTestModel.getTestId()),
+                                this.getHtmlLogAttachmentPath(scheduledTestModel.getTestId())
                         });
             }
-
-/*
-            this.mailUtil.sendMail("brgl.furkan@gmail.com",
-                    new String[]{scheduledTestModel.getSchedulingUserEMail()},
-                    "QA - " + scheduledTestModel.getNodeName() + " Test Scenario's finished.",
-                    "",
-                    new String[]{
-                            this.getReportAttachmentPath(scheduledTestModel.getId()),
-                            this.getHtmlLogAttachmentPath(scheduledTestModel.getId())
-                    });
-*/
             p.waitFor();
+
+            ScheduledTestsDao.updateScheduledTestDetail(mailContent, scheduledTestModel);
+
 
         } catch (Exception e) {
 
@@ -220,7 +213,7 @@ public class ScheduledTestsService {
                 .append(scheduledTestModel.getTestClassName())
                 .append(" ")
                 .append("-Dtest.id=")
-                .append(scheduledTestModel.getId())
+                .append(scheduledTestModel.getTestId())
                 .append(" ")
 //                .append("-Dserverip=")
 //                .append(seleniumInstance.getIpAddress())
