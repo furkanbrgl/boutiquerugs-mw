@@ -105,4 +105,20 @@ public class ScheduledTestModel {
     public void setTestFinishTime(long testFinishTime) {
         this.testFinishTime = testFinishTime;
     }
+
+    @Override
+    public String toString() {
+        return "ScheduledTestModel{" +
+                "testId=" + testId +
+                ", nodeId=" + nodeId +
+                ", nodeName='" + nodeName + '\'' +
+                ", testClassName='" + testClassName + '\'' +
+                ", testResultEmailAddress='" + testResultEmailAddress + '\'' +
+                ", testStatus='" + testStatus + '\'' +
+                ", testStartTime=" + testStartTime +
+                ", testFinishTime=" + testFinishTime +
+                ", testParams=" + testParams +
+                ", mailContent=" + mailContent +
+                '}';
+    }
 }

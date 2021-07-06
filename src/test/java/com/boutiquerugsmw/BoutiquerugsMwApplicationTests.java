@@ -2,7 +2,7 @@ package com.boutiquerugsmw;
 
 import com.boutiquerugsmw.repository.impl.ScheduledTestsDaoImpl;
 import com.boutiquerugsmw.model.SeleniumInstanceModel;
-import com.boutiquerugsmw.service.ScheduledTestsService;
+import com.boutiquerugsmw.service.ScheduledTestsStarter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,14 +13,14 @@ import javax.mail.MessagingException;
 class BoutiquerugsMwApplicationTests {
 
 	@Autowired
-	ScheduledTestsService scheduledTestsService;
+    ScheduledTestsStarter scheduledTestsStarter;
 
 	@Autowired
-	ScheduledTestsDaoImpl scheduledTestsRepositoryImpl;
+	ScheduledTestsDaoImpl scheduledTestsRepository;
 
 	@Test
 	void contextLoads() throws MessagingException {
-		scheduledTestsService.startTest(scheduledTestsRepositoryImpl.getScheduledTests(System.currentTimeMillis()), new SeleniumInstanceModel());
+		scheduledTestsStarter.startTest(scheduledTestsRepository.getScheduledTests(System.currentTimeMillis()), new SeleniumInstanceModel());
 	}
 
 }

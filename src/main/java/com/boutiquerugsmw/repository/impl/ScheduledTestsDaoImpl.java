@@ -2,22 +2,34 @@ package com.boutiquerugsmw.repository.impl;
 
 import com.boutiquerugsmw.model.MailContent;
 import com.boutiquerugsmw.model.ScheduledTestModel;
-import com.boutiquerugsmw.repository.ScheduledTestDao;
+import com.boutiquerugsmw.repository.ScheduledTestsDao;
+import com.boutiquerugsmw.repository.ScheduledTestsRepository;
 import com.boutiquerugsmw.util.Constants;
 import com.boutiquerugsmw.util.PropertyNames;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * parameters need to be taken from DB.
  */
 @Repository
-public class ScheduledTestsDaoImpl implements ScheduledTestDao {
+public class ScheduledTestsDaoImpl implements ScheduledTestsDao {
+
+    private static final Logger LOGGER = LogManager.getLogger(ScheduledTestsDaoImpl.class);
+
 
     @Value(PropertyNames.BOUTIQUE_RUGS_USER_EMAIL)
     private String boutiqueRugsUserEmail;
@@ -34,6 +46,8 @@ public class ScheduledTestsDaoImpl implements ScheduledTestDao {
     @Value(PropertyNames.TEST_SCENARIO_CLASS_NAME)
     private String testScenarioClassName;
 
+    @Autowired
+    private ScheduledTestsRepository scheduledTestsRepository;
     @Autowired
     private MongoTemplate mongoTemplate;
 
@@ -55,7 +69,7 @@ public class ScheduledTestsDaoImpl implements ScheduledTestDao {
         scheduledTestModel.setTestParams(this.getScheduledTestParams(scheduledTestModel.getTestId()));
         scheduledTestModel.setTestStatus(Constants.SCENARIO_STATUS_WAITING);
 
-        mongoTemplate.save(scheduledTestModel);
+        scheduledTestsRepository.save(scheduledTestModel);
 
         return scheduledTestModel;
     }
@@ -64,7 +78,7 @@ public class ScheduledTestsDaoImpl implements ScheduledTestDao {
     public void updateScheduledTestStatus(String scenarioStatus, ScheduledTestModel scheduledTestModel) {
 
         scheduledTestModel.setTestStatus(scenarioStatus);
-        mongoTemplate.save(scheduledTestModel);
+        scheduledTestsRepository.save(scheduledTestModel);
 
     }
 
@@ -72,7 +86,27 @@ public class ScheduledTestsDaoImpl implements ScheduledTestDao {
     public void updateScheduledTestDetail(MailContent mailContent, ScheduledTestModel scheduledTestModel) {
         scheduledTestModel.setMailContent(mailContent);
         scheduledTestModel.setTestFinishTime(System.currentTimeMillis());
-        mongoTemplate.save(scheduledTestModel);
+        scheduledTestsRepository.save(scheduledTestModel);
+    }
+
+    @Override
+    public Page<ScheduledTestModel> findAll(Pageable pageable) {
+        return scheduledTestsRepository.findAll(pageable);
+    }
+
+    @Override
+    public Optional<List<ScheduledTestModel>> getLastNRecord(int LastNRecod) {
+
+        Query query = new Query();
+        query.limit(LastNRecod);
+        query.with(Sort.by(Sort.Direction.DESC,"testId"));
+
+        return Optional.of(mongoTemplate.find(query, ScheduledTestModel.class));
+    }
+
+    @Override
+    public Optional<ScheduledTestModel> findById(long testId) {
+        return scheduledTestsRepository.findById(testId);
     }
 
     private Map<String, String> getScheduledTestParams(Object testID ) {
@@ -85,5 +119,6 @@ public class ScheduledTestsDaoImpl implements ScheduledTestDao {
 
         return result;
     }
+
 
 }
