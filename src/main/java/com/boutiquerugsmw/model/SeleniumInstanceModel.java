@@ -4,8 +4,20 @@ public class SeleniumInstanceModel {
 
     private String ipAddress;
     private String port;
-    private int hostId;
+    private String nodeTag;
+    private String hostId;
     private boolean available;
+
+    public SeleniumInstanceModel(String ipAddress, String port, String nodeTag, String hostId, boolean available) {
+        this.ipAddress = ipAddress;
+        this.port = port;
+        this.nodeTag = nodeTag;
+        this.hostId = hostId;
+        this.available = available;
+    }
+
+    public SeleniumInstanceModel() {
+    }
 
     public String getIpAddress() {
         return ipAddress;
@@ -31,11 +43,11 @@ public class SeleniumInstanceModel {
         this.available = available;
     }
 
-    public int getHostId() {
+    public String getHostId() {
         return hostId;
     }
 
-    public void setHostId(int hostId) {
+    public void setHostId(String hostId) {
         this.hostId = hostId;
     }
 }

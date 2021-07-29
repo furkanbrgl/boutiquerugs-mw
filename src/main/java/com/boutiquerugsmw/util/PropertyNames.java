@@ -1,7 +1,5 @@
 package com.boutiquerugsmw.util;
 
-import org.springframework.beans.factory.annotation.Value;
-
 public class PropertyNames {
 
 	public static final String SCHEDULED_TESTS_ENVIRONMENT = "${scheduled.tests.environment}";
@@ -13,11 +11,11 @@ public class PropertyNames {
 	public static final String SCHEDULED_TESTS_REPORT_PATH = "${scheduled.test.report.path}";
 //	public static final String SCHEDULED_TESTS_REPORT_PATH_FTP = "${scheduled.tests.file.path.ftp}";
 
-//	public static final String SELENIUM_INSTANCES_IP_ADDRESSES = "${selenium.instances.ip.addresses}";
-//	public static final String SELENIUM_INSTANCES_HOST_IDS = "${selenium.instances.host.ids}";
-//	public static final String SELENIUM_INSTANCES_PORT = "${selenium.instances.port}";
+	public static final String SELENIUM_INSTANCES_IP_ADDRESSES = "${selenium.instances.ip.addresses}";
+	public static final String SELENIUM_HUB_IP_ADDRESS = "${selenium.hub.ip.address}";
+	public static final String SELENIUM_INSTANCES_PORT = "${selenium.instances.port}";
 
-	
+
 //	public static final String IS_DEBUG_MODE_ACTIVE = "${executed.debug.mode}";
 
 	public static final String BOUTIQUE_RUGS_USER_EMAIL = "${boutique.rugs.user.email}";
@@ -28,7 +26,5 @@ public class PropertyNames {
 
 	public static final String FROM_EMAIL_ADDRESS = "${from.email.address}";
 	public static final String FROM_EMAIL_USER_PASSWORD = "${from.email.user.password}";
-
-
 
 }
