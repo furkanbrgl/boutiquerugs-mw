@@ -10,8 +10,7 @@ public class ScheduledTestModel {
 
     @Id
     private long testId;
-    private long nodeId;
-    private String nodeName;
+    private SeleniumInstanceModel seleniumInstanceModel;
     private String testClassName;
     private String testResultEmailAddress;
     private String testStatus;
@@ -28,14 +27,6 @@ public class ScheduledTestModel {
 
     public void setTestId(long testId) {
         this.testId = testId;
-    }
-
-    public long getNodeId() {
-        return nodeId;
-    }
-
-    public void setNodeId(long nodeId) {
-        this.nodeId = nodeId;
     }
 
     public String getTestClassName() {
@@ -60,14 +51,6 @@ public class ScheduledTestModel {
 
     public void setTestResultEmailAddress(String testResultEmailAddress) {
         this.testResultEmailAddress = testResultEmailAddress;
-    }
-
-    public String getNodeName() {
-        return nodeName;
-    }
-
-    public void setNodeName(String nodeName) {
-        this.nodeName = nodeName;
     }
 
     public void setTestClassName(String testClassName) {
@@ -106,19 +89,26 @@ public class ScheduledTestModel {
         this.testFinishTime = testFinishTime;
     }
 
+    public SeleniumInstanceModel getSeleniumInstanceModel() {
+        return seleniumInstanceModel;
+    }
+
+    public void setSeleniumInstanceModel(SeleniumInstanceModel seleniumInstanceModel) {
+        this.seleniumInstanceModel = seleniumInstanceModel;
+    }
+
     @Override
     public String toString() {
         return "ScheduledTestModel{" +
                 "testId=" + testId +
-                ", nodeId=" + nodeId +
-                ", nodeName='" + nodeName + '\'' +
+                ", seleniumInstanceModel=" + seleniumInstanceModel.toString() +
                 ", testClassName='" + testClassName + '\'' +
                 ", testResultEmailAddress='" + testResultEmailAddress + '\'' +
                 ", testStatus='" + testStatus + '\'' +
                 ", testStartTime=" + testStartTime +
                 ", testFinishTime=" + testFinishTime +
-                ", testParams=" + testParams +
-                ", mailContent=" + mailContent +
+                ", testParams=" + testParams.toString() +
+                ", mailContent=" + mailContent.toString() +
                 '}';
     }
 }

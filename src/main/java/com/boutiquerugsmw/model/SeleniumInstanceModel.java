@@ -50,4 +50,23 @@ public class SeleniumInstanceModel {
     public void setHostId(String hostId) {
         this.hostId = hostId;
     }
+
+    public String getNodeTag() {
+        return nodeTag;
+    }
+
+    public void setNodeTag(String nodeTag) {
+        this.nodeTag = nodeTag;
+    }
+
+    @Override
+    public String toString() {
+        return "SeleniumInstanceModel{" +
+                "ipAddress='" + ipAddress + '\'' +
+                ", port='" + port + '\'' +
+                ", nodeTag='" + nodeTag + '\'' +
+                ", hostId='" + hostId + '\'' +
+                ", available=" + available +
+                '}';
+    }
 }

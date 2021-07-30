@@ -51,7 +51,8 @@ public class ScheduledTestsStarter {
     private String fromEmailUserPassword;
 
     @Async
-    public void startTest(ScheduledTestModel scheduledTestModel, SeleniumInstanceModel seleniumInstance) throws MessagingException {
+    public void startTest(ScheduledTestModel scheduledTestModel, SeleniumInstanceModel seleniumInstance)
+            throws MessagingException {
 
         MailContent mailContent = getInitialMailContent(new MailContent(),scheduledTestModel);
 
@@ -190,8 +191,10 @@ public class ScheduledTestsStarter {
 
     private MailContent getInitialMailContent(MailContent mailContent, ScheduledTestModel scheduledTestModel) {
         mailContent.setTestID(scheduledTestModel.getTestId());
-        mailContent.setNodeId(scheduledTestModel.getNodeId());
-        mailContent.setNodeName(scheduledTestModel.getNodeName());
+        mailContent.setNodeIpAddress(scheduledTestModel.getSeleniumInstanceModel().getIpAddress());
+        mailContent.setNodeName(scheduledTestModel.getSeleniumInstanceModel().getNodeTag());
+        mailContent.setHostID(scheduledTestModel.getSeleniumInstanceModel().getHostId());
+        mailContent.setNodePort(scheduledTestModel.getSeleniumInstanceModel().getPort());
         mailContent.setTestStartTime(DateUtil.formatDateWithTime(new Date()));
 
         return mailContent;

@@ -2,6 +2,7 @@ package com.boutiquerugsmw.repository.impl;
 
 import com.boutiquerugsmw.model.MailContent;
 import com.boutiquerugsmw.model.ScheduledTestModel;
+import com.boutiquerugsmw.model.SeleniumInstanceModel;
 import com.boutiquerugsmw.repository.ScheduledTestsDao;
 import com.boutiquerugsmw.repository.ScheduledTestsRepository;
 import com.boutiquerugsmw.util.Constants;
@@ -59,11 +60,16 @@ public class ScheduledTestsDaoImpl implements ScheduledTestsDao {
     public ScheduledTestModel getScheduledTests(long testId) {
 
         ScheduledTestModel scheduledTestModel = new ScheduledTestModel();
+        SeleniumInstanceModel seleniumInstanceModel = new SeleniumInstanceModel();
+        seleniumInstanceModel.setNodeTag("Test_Node_Tag");
+        seleniumInstanceModel.setHostId("Test_Host_Ip");
+        seleniumInstanceModel.setIpAddress("Test_Node_Ip");
+        seleniumInstanceModel.setAvailable(true);
+        seleniumInstanceModel.setPort("Test_Node_Port");
 
         scheduledTestModel.setTestId(testId);
         scheduledTestModel.setTestStartTime(testId);
-        scheduledTestModel.setNodeId(999999);
-        scheduledTestModel.setNodeName("999999NodeName");
+        scheduledTestModel.setSeleniumInstanceModel(seleniumInstanceModel);
         scheduledTestModel.setTestResultEmailAddress(testResultEmailAddress);
         scheduledTestModel.setScenarioClassName(testScenarioClassName);
         scheduledTestModel.setTestParams(this.getScheduledTestParams(scheduledTestModel.getTestId()));

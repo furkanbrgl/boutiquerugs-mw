@@ -3,8 +3,11 @@ package com.boutiquerugsmw.model;
 public class MailContent {
 
     private Object testID;
-    private long nodeId;
+    private String nodeIpAddress;
     private String nodeName;
+
+    private String hostID;
+    private String nodePort;
 
     private String testStartTime;
     private String testFinishTime;
@@ -58,13 +61,7 @@ public class MailContent {
         this.testStartMillis = testStartMillis;
     }
 
-    public long getNodeId() {
-        return nodeId;
-    }
 
-    public void setNodeId(long nodeId) {
-        this.nodeId = nodeId;
-    }
 
     public String getNodeName() {
         return nodeName;
@@ -94,6 +91,30 @@ public class MailContent {
         this.testResultInfo = testResultInfo;
     }
 
+    public String getHostID() {
+        return hostID;
+    }
+
+    public void setHostID(String hostID) {
+        this.hostID = hostID;
+    }
+
+    public String getNodePort() {
+        return nodePort;
+    }
+
+    public void setNodePort(String nodePort) {
+        this.nodePort = nodePort;
+    }
+
+    public String getNodeIpAddress() {
+        return nodeIpAddress;
+    }
+
+    public void setNodeIpAddress(String nodeIpAddress) {
+        this.nodeIpAddress = nodeIpAddress;
+    }
+
     /**
      * TODO: will be developed as HTML generator page. furkan
      * @return
@@ -101,8 +122,9 @@ public class MailContent {
     public String getHTMLContent(ScheduledTestModel scheduledTestModel) {
 
         String c = "Test ID : " + this.getTestID() + System.lineSeparator() +
-                "Selenium Node ID : " + scheduledTestModel.getNodeId() + System.lineSeparator() +
-                "Selenium Node Name : " + scheduledTestModel.getNodeName() + System.lineSeparator() +
+                "Selenium Node Ip : " + scheduledTestModel.getSeleniumInstanceModel().getIpAddress() + System.lineSeparator() +
+                "Selenium Node Name : " + scheduledTestModel.getSeleniumInstanceModel().getNodeTag() + System.lineSeparator() +
+                "Selenium Hub Ip : " + scheduledTestModel.getSeleniumInstanceModel().getHostId() + System.lineSeparator() +
                 "Test Start Time : " + this.getTestStartTime() + System.lineSeparator() +
                 "Test Finish Time : " + this.getTestFinishTime() + System.lineSeparator() +
                 "Test Duration : " + this.getTestDuration() + System.lineSeparator() +
@@ -113,4 +135,7 @@ public class MailContent {
                 "Test Parameters : " + this.getCustomResult() + System.lineSeparator();
         return c;
     }
+
+
+
 }

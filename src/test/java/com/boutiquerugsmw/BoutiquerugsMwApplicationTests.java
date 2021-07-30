@@ -12,6 +12,7 @@ import javax.mail.MessagingException;
 @SpringBootTest
 class BoutiquerugsMwApplicationTests {
 
+
 	@Autowired
     ScheduledTestsStarter scheduledTestsStarter;
 
@@ -20,7 +21,8 @@ class BoutiquerugsMwApplicationTests {
 
 	@Test
 	void contextLoads() throws MessagingException {
-		scheduledTestsStarter.startTest(scheduledTestsRepository.getScheduledTests(System.currentTimeMillis()), new SeleniumInstanceModel());
+		scheduledTestsStarter.startTest(scheduledTestsRepository.getScheduledTests(System.currentTimeMillis()),
+				new SeleniumInstanceModel());
 	}
 
 }
