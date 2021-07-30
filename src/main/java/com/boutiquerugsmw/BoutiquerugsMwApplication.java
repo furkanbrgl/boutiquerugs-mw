@@ -2,7 +2,7 @@ package com.boutiquerugsmw;
 
 import com.boutiquerugsmw.model.SeleniumInstanceModel;
 import com.boutiquerugsmw.util.PropertyNames;
-import com.boutiquerugsmw.util.SeleniumInstanceConfig;
+import com.boutiquerugsmw.util.BrNodeMaps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -26,7 +26,7 @@ public class BoutiquerugsMwApplication {
 	}
 
 	@Autowired
-	private SeleniumInstanceConfig seleniumInstanceConfig;
+	private BrNodeMaps brNodeMaps;
 
 	@Value("#{${selenium.instances.ip.addresses}}")
 	private Map<String,String> seleniumInstancesIpAddresses;
@@ -60,7 +60,7 @@ public class BoutiquerugsMwApplication {
 
 		for (String key : this.seleniumInstancesIpAddresses.keySet())
 		{
-			seleniumInstanceConfig.getSeleniumInstanceMap().put(key, new SeleniumInstanceModel(
+			brNodeMaps.getSeleniumInstancesMap().put(key, new SeleniumInstanceModel(
 					this.seleniumInstancesIpAddresses.get(key),
 					seleniumInstancePort,
 					key,
@@ -68,7 +68,7 @@ public class BoutiquerugsMwApplication {
 					true
 			));
 		}
-		return seleniumInstanceConfig.getSeleniumInstanceMap();
+		return brNodeMaps.getSeleniumInstancesMap();
 	}
 
 }

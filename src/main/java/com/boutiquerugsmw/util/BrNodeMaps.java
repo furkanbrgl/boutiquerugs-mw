@@ -9,13 +9,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class SeleniumInstanceConfig {
+public class BrNodeMaps {
 
-    private static final Logger log = LoggerFactory.getLogger(SeleniumInstanceConfig.class);
+    private static final Logger log = LoggerFactory.getLogger(BrNodeMaps.class);
 
     private Map<String, SeleniumInstanceModel> seleniumInstanceMap = new ConcurrentHashMap<>();
 
-    public Map<String, SeleniumInstanceModel> getSeleniumInstanceMap() {
+    public Map<String, SeleniumInstanceModel> getSeleniumInstancesMap() {
         return seleniumInstanceMap;
     }
 
@@ -23,7 +23,7 @@ public class SeleniumInstanceConfig {
     public String toString() {
         log.info(seleniumInstanceMap.toString());
         return "SeleniumInstanceConfig{" +
-                "seleniumInstanceMap=" + seleniumInstanceMap +
+                "seleniumInstanceMap=" + seleniumInstanceMap.toString() +
                 '}';
     }
 }
