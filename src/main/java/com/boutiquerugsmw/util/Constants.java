@@ -10,8 +10,4 @@ public class Constants {
 	public static final String SCENARIO_STATUS_COMPLETED = "COMPLETED";
 	public static final String SCENARIO_STATUS_FAILED = "FAILED";
 
-	public static final String SCENARIO_LOGIN = "LOGIN SCENARIO";
-	public static final String SCENARIO_SEARCH = "SEARCH SCENARIO";
-	public static final String SCENARIO_PAYMENT = "PAYMENT SCENARIO";
-
 }

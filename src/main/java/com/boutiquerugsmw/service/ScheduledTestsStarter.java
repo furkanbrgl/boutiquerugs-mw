@@ -4,10 +4,7 @@ import com.boutiquerugsmw.model.MailContent;
 import com.boutiquerugsmw.model.ScheduledTestModel;
 import com.boutiquerugsmw.model.SeleniumInstanceModel;
 import com.boutiquerugsmw.repository.impl.ScheduledTestsDaoImpl;
-import com.boutiquerugsmw.util.Constants;
-import com.boutiquerugsmw.util.DateUtil;
-import com.boutiquerugsmw.util.MailUtil;
-import com.boutiquerugsmw.util.PropertyNames;
+import com.boutiquerugsmw.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +28,9 @@ public class ScheduledTestsStarter {
 
     @Autowired
     private MailUtil mailUtil;
+
+    @Autowired
+    private BrNodeMaps brNodeMaps;
 
     @Value(PropertyNames.SCHEDULED_TESTS_ENVIRONMENT)
     private String scheduledTestsEnvironment;
@@ -166,7 +166,9 @@ public class ScheduledTestsStarter {
 
             logger.info(mavenLog.toString());
 
-            scheduledTestModel.getSeleniumInstanceModel().setAvailable(true);
+            brNodeMaps.getSeleniumInstancesMap().
+                    get(scheduledTestModel.getSeleniumInstanceModel().getNodeTag()).setAvailable(true);
+            logger.info(scheduledTestModel.getSeleniumInstanceModel().getNodeTag() + " has been released for future test :::::::::::.");
             try {
                 if (br != null) br.close();
             } catch (IOException e) {
@@ -215,8 +217,11 @@ public class ScheduledTestsStarter {
                 .append("-Dtest.id=")
                 .append(scheduledTestModel.getTestId())
                 .append(" ")
-//                .append("-Dserverip=")
-//                .append(seleniumInstance.getIpAddress())
+                .append("-Dserverip=")
+                .append(seleniumInstance.getIpAddress())
+                .append(" ")
+                .append("-DnodeTag=")
+                .append(seleniumInstance.getNodeTag())
                 .append(" ")
                 .append("test");
 

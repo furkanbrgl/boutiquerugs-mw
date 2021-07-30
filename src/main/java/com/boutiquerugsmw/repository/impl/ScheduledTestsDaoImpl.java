@@ -18,34 +18,20 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 /**
- * parameters need to be taken from DB.
+ * parameters need to be taken from DB. When they are set up from web.
  */
 @Repository
 public class ScheduledTestsDaoImpl implements ScheduledTestsDao {
 
     private static final Logger LOGGER = LogManager.getLogger(ScheduledTestsDaoImpl.class);
 
-
-    @Value(PropertyNames.BOUTIQUE_RUGS_USER_EMAIL)
-    private String boutiqueRugsUserEmail;
-
-    @Value(PropertyNames.BOUTIQUE_RUGS_PASSWORD)
-    private String boutiqueRugsUserPassword;
-
-    @Value(PropertyNames.CHROME_DRIVER)
-    private String chromeDriver;
-
     @Value(PropertyNames.TEST_RESULT_EMAIL_ADDRESS)
     private String testResultEmailAddress;
-
-    @Value(PropertyNames.TEST_SCENARIO_CLASS_NAME)
-    private String testScenarioClassName;
 
     @Autowired
     private ScheduledTestsRepository scheduledTestsRepository;
@@ -56,23 +42,17 @@ public class ScheduledTestsDaoImpl implements ScheduledTestsDao {
      * These paremeters must've been assigned on the website and able to be reached by testID on the MW.
      * @return
      */
-    @Override
-    public ScheduledTestModel getScheduledTests(long testId) {
+    public ScheduledTestModel getScheduledTests(long testId, String testScenarioClassName, SeleniumInstanceModel availableSeleniumInstance, Map<String, String> scheduledTestParams) {
 
         ScheduledTestModel scheduledTestModel = new ScheduledTestModel();
-        SeleniumInstanceModel seleniumInstanceModel = new SeleniumInstanceModel();
-        seleniumInstanceModel.setNodeTag("Test_Node_Tag");
-        seleniumInstanceModel.setHostId("Test_Host_Ip");
-        seleniumInstanceModel.setIpAddress("Test_Node_Ip");
-        seleniumInstanceModel.setAvailable(true);
-        seleniumInstanceModel.setPort("Test_Node_Port");
 
         scheduledTestModel.setTestId(testId);
         scheduledTestModel.setTestStartTime(testId);
-        scheduledTestModel.setSeleniumInstanceModel(seleniumInstanceModel);
+        scheduledTestModel.setSeleniumInstanceModel(availableSeleniumInstance);
         scheduledTestModel.setTestResultEmailAddress(testResultEmailAddress);
         scheduledTestModel.setScenarioClassName(testScenarioClassName);
-        scheduledTestModel.setTestParams(this.getScheduledTestParams(scheduledTestModel.getTestId()));
+        scheduledTestModel.setTestParams(scheduledTestParams);
+
         scheduledTestModel.setTestStatus(Constants.SCENARIO_STATUS_WAITING);
 
         scheduledTestsRepository.save(scheduledTestModel);
@@ -114,17 +94,5 @@ public class ScheduledTestsDaoImpl implements ScheduledTestsDao {
     public Optional<ScheduledTestModel> findById(long testId) {
         return scheduledTestsRepository.findById(testId);
     }
-
-    private Map<String, String> getScheduledTestParams(Object testID ) {
-
-        Map <String, String> result = new HashMap<String, String>();
-        result.put("boutiqueRugsUserEmail", boutiqueRugsUserEmail);
-        result.put("boutiqueRugsUserPassword", boutiqueRugsUserPassword);
-        result.put("chromeDriver", chromeDriver);
-        result.put("testResultEmailAddress", testResultEmailAddress);
-
-        return result;
-    }
-
 
 }
