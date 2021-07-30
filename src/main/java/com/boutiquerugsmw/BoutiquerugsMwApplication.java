@@ -37,14 +37,20 @@ public class BoutiquerugsMwApplication {
 	@Value(PropertyNames.SELENIUM_INSTANCES_PORT)
 	private String seleniumInstancePort;
 
+	@Value(PropertyNames.FROM_EMAIL_ADDRESS)
+	private String fromEmailAddress;
+
+	@Value(PropertyNames.FROM_EMAIL_USER_PASSWORD)
+	private String fromEmailUserPassword;
+
 	@Bean
 	public JavaMailSender getJavaMailSender() {
 		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 		mailSender.setHost("smtp.gmail.com");
 		mailSender.setPort(587);
 
-		mailSender.setUsername("boutiquerugstest@gmail.com");
-		mailSender.setPassword("boutiquerugs123!");
+		mailSender.setUsername(fromEmailAddress);
+		mailSender.setPassword(fromEmailUserPassword);
 
 		Properties props = mailSender.getJavaMailProperties();
 		props.put("mail.transport.protocol", "smtp");

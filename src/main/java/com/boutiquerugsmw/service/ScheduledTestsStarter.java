@@ -47,11 +47,8 @@ public class ScheduledTestsStarter {
     @Value(PropertyNames.FROM_EMAIL_ADDRESS)
     private String fromEmailAddress;
 
-    @Value(PropertyNames.FROM_EMAIL_USER_PASSWORD)
-    private String fromEmailUserPassword;
-
     @Async
-    public void startTest(ScheduledTestModel scheduledTestModel, SeleniumInstanceModel seleniumInstance)
+    public void startTest(ScheduledTestModel scheduledTestModel)
             throws MessagingException {
 
         MailContent mailContent = getInitialMailContent(new MailContent(),scheduledTestModel);
@@ -76,7 +73,7 @@ public class ScheduledTestsStarter {
             ScheduledTestsDao.updateScheduledTestStatus(Constants.SCENARIO_STATUS_RUNNING, scheduledTestModel);
             logger.info("Test status is set to Running...Maven command will run .. ");
 
-            String[] mvnCommand = this.generateMavenCommand(scheduledTestModel, seleniumInstance);
+            String[] mvnCommand = this.generateMavenCommand(scheduledTestModel, scheduledTestModel.getSeleniumInstanceModel());
 
             Process p = Runtime.getRuntime().exec(mvnCommand);
             br = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -169,7 +166,7 @@ public class ScheduledTestsStarter {
 
             logger.info(mavenLog.toString());
 
-            seleniumInstance.setAvailable(true);
+            scheduledTestModel.getSeleniumInstanceModel().setAvailable(true);
             try {
                 if (br != null) br.close();
             } catch (IOException e) {

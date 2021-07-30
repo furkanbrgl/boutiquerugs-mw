@@ -1,7 +1,6 @@
 package com.boutiquerugsmw;
 
 import com.boutiquerugsmw.repository.impl.ScheduledTestsDaoImpl;
-import com.boutiquerugsmw.model.SeleniumInstanceModel;
 import com.boutiquerugsmw.service.ScheduledTestsStarter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +20,7 @@ class BoutiquerugsMwApplicationTests {
 
 	@Test
 	void contextLoads() throws MessagingException {
-		scheduledTestsStarter.startTest(scheduledTestsRepository.getScheduledTests(System.currentTimeMillis()),
-				new SeleniumInstanceModel());
+		scheduledTestsStarter.startTest(scheduledTestsRepository.getScheduledTests(System.currentTimeMillis()));
 	}
 
 }
