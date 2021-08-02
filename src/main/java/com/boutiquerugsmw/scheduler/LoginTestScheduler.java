@@ -5,6 +5,7 @@ import com.boutiquerugsmw.model.SeleniumInstanceModel;
 import com.boutiquerugsmw.repository.impl.ScheduledTestsDaoImpl;
 import com.boutiquerugsmw.service.ScheduledTestsStarter;
 import com.boutiquerugsmw.util.BrNodeMaps;
+import com.boutiquerugsmw.util.BrNodeStatus;
 import com.boutiquerugsmw.util.PropertyNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,9 @@ public class LoginTestScheduler {
     private BrNodeMaps brNodeMaps;
 
     @Autowired
+    private BrNodeStatus brNodeStatus;
+
+    @Autowired
     ScheduledTestsStarter scheduledTestsStarter;
 
     @Autowired
@@ -53,12 +57,10 @@ public class LoginTestScheduler {
     private final long testId = System.currentTimeMillis();
 
     @Scheduled(fixedDelay = 5000)
-    public void reportCurrentTime() throws MessagingException {
-        log.info("The time is now {}", dateFormat.format(new Date()));
+    public void initiateLoginTest() throws MessagingException {
         try {
             scheduledTestsStarter.startTest(this.getScheduledTest());
         } catch (Exception e) {
-            log.info("Available Node Could Not Be Found :::: ", e.getMessage());
         }
     }
 
@@ -68,12 +70,14 @@ public class LoginTestScheduler {
         for (Map.Entry<String,SeleniumInstanceModel> SIntanceMap : brNodeMaps.getSeleniumInstancesMap().entrySet())
         {
             if(SIntanceMap.getValue().isAvailable()){
-                log.info("Available Node :::: Key = " + SIntanceMap.getKey() +", Value = " + SIntanceMap.getValue().toString());
-                SIntanceMap.getValue().setAvailable(false);
-
-                return SIntanceMap.getValue();
+                if(brNodeStatus.isNodeReachable(SIntanceMap.getValue().getIpAddress())){
+                    log.info("Available Node :::: Key = " + SIntanceMap.getKey() +", Value = " + SIntanceMap.getValue().toString());
+                    SIntanceMap.getValue().setAvailable(false);
+                    return SIntanceMap.getValue();
+                }
             }
         }
+        log.info("Available Node Could Not Be Found ::: ");
         throw new Exception("Available Node Could Not Be Found");
     }
 
