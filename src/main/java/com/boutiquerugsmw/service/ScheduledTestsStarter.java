@@ -223,6 +223,8 @@ public class ScheduledTestsStarter {
                 .append("-DnodeTag=")
                 .append(seleniumInstance.getNodeTag())
                 .append(" ")
+                .append("-DhubIpAddress=")
+                .append(scheduledTestModel.getSeleniumInstanceModel().getHostId())
                 .append("test");
 
         for (String key : scheduledTestModel.getTestParams().keySet()) {

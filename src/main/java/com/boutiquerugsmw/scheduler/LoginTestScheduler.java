@@ -54,8 +54,6 @@ public class LoginTestScheduler {
     @Value(PropertyNames.TEST_RESULT_EMAIL_ADDRESS)
     private String testResultEmailAddress;
 
-    private final long testId = System.currentTimeMillis();
-
     @Scheduled(fixedDelay = 5000)
     public void initiateLoginTest() throws MessagingException {
         try {
@@ -83,10 +81,12 @@ public class LoginTestScheduler {
 
     private ScheduledTestModel getScheduledTest() throws Exception {
 
+        long testId = System.currentTimeMillis();
+
         return scheduledTestsRepository.getScheduledTests(testId,
                 testScenarioClassName,
                 this.getAvailableSeleniumInstance(),
-                this.getScheduledTestParams(this.testId));
+                this.getScheduledTestParams(testId));
     }
 
     private Map<String, String> getScheduledTestParams(long testID ) {
