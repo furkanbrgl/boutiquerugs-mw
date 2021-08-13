@@ -1,0 +1,42 @@
+spring:
+  profiles:
+    active: prod
+  data:
+    mongodb:
+      user: boutiquerugsmongo
+      password: boutiquerugspassword
+      authentication-database: admin
+      database: boutiquerugsDbTest
+      host: localhost
+      port: 27017
+      repositories:
+        enabled: true
+
+app:
+  scheduledTest:
+    environment: PROD
+    projectPath: "C:\\Users\\brglf\\IdeaProjects\\boutiquerugs-qa"
+    logPath: "C:\\Users\\brglf\\OneDrive\\Desktop\\New folder\\"
+    reportPath: "C:\\Users\\brglf\\OneDrive\\Desktop\\New folder\\"
+    resultEmailAddress: "brgl.furkan@gmail.com"
+    fromEmailAddress:
+      username: "boutiquerugstest@gmail.com"
+      password: "boutiquerugs123!"
+
+  selenium:
+    driver:
+      chrome: "webdriver.chrome.driver"
+      safari: "dummysafari"
+    instances:
+      port: 5555
+      ipAddresses: "{node_1:'192.168.86.36',node_2:'192.168.86.27'}"
+    hub:
+      ipAddress: "http://192.168.86.33:4444/wd/hub"
+
+  boutiqueRugsUser:
+    email: "boutiquerugstest@gmail.com"
+    password: "boutiquerugs123!"
+
+  scenarios:
+    loginTest: "LoginTest"
+    paymentTest: "PaymentTest"
