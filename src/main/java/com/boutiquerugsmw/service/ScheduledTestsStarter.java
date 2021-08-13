@@ -32,20 +32,8 @@ public class ScheduledTestsStarter {
     @Autowired
     private BrNodeMaps brNodeMaps;
 
-    @Value(PropertyNames.SCHEDULED_TESTS_ENVIRONMENT)
-    private String scheduledTestsEnvironment;
-
-    @Value(PropertyNames.SCHEDULED_TESTS_PROJECT_PATH)
-    private String scheduledTestsProjectPath;
-
-    @Value(PropertyNames.SCHEDULED_TESTS_LOG_PATH)
-    private String scheduledTestLogPath;
-
-    @Value(PropertyNames.SCHEDULED_TESTS_REPORT_PATH)
-    private String scheduledTestReportPath;
-
-    @Value(PropertyNames.FROM_EMAIL_ADDRESS)
-    private String fromEmailAddress;
+    @Autowired
+    ApplicationConfigProp applicationConfigProp;
 
     @Async
     public void startTest(ScheduledTestModel scheduledTestModel)
@@ -130,7 +118,7 @@ public class ScheduledTestsStarter {
                 ScheduledTestsDao.updateScheduledTestStatus(Constants.SCENARIO_STATUS_FAILED, scheduledTestModel);
                 mailContent = getFinalMailContent(mailContent, mvnCommand[2].toString(),Constants.SCENARIO_STATUS_FAILED, message.toString());
 
-                this.mailUtil.sendMail(fromEmailAddress,
+                this.mailUtil.sendMail(applicationConfigProp.getScheduledTest().getFromEmailAddress().getUsername(),
                         new String[]{scheduledTestModel.getTestResultEmailAddress()},
                         scheduledTestModel.getTestClassName() + " Scenario's finished. " + "Status : " + Constants.SCENARIO_STATUS_FAILED,
                         mailContent, scheduledTestModel,
@@ -143,7 +131,7 @@ public class ScheduledTestsStarter {
                 mailContent = getFinalMailContent(mailContent, mvnCommand[2].toString(), Constants.SCENARIO_STATUS_COMPLETED, message.toString());
 
 
-                this.mailUtil.sendMail(fromEmailAddress,
+                this.mailUtil.sendMail(applicationConfigProp.getScheduledTest().getFromEmailAddress().getUsername(),
                         new String[]{scheduledTestModel.getTestResultEmailAddress()},
                         scheduledTestModel.getTestClassName() + " Scenario's finished. " + "Status : " + Constants.SCENARIO_STATUS_COMPLETED,
                         mailContent,scheduledTestModel,
@@ -203,7 +191,7 @@ public class ScheduledTestsStarter {
 
         StringBuilder cmd = new StringBuilder()
                 .append("cd").append(" ")
-                .append(this.scheduledTestsProjectPath)
+                .append(applicationConfigProp.getScheduledTest().getProjectPath())
                 .append("&&")
                 .append("dir")
                 .append("&&")
@@ -225,13 +213,13 @@ public class ScheduledTestsStarter {
                 .append(" ")
                 .append("-DhubIpAddress=")
                 .append(scheduledTestModel.getSeleniumInstanceModel().getHostId())
+                .append(" ")
                 .append("test");
 
         for (String key : scheduledTestModel.getTestParams().keySet()) {
             cmd.append(" -D").append(key).append("=\"").append(scheduledTestModel.getTestParams().get(key)).append("\"");
         }
-        cmd.append(" -Denv=\"").append(this.scheduledTestsEnvironment).append("\"");
-
+        cmd.append(" -Denv=\"").append("PROD").append("\"");
 
         return new String[]{"cmd.exe", "/c", cmd.toString()};
     }
@@ -254,7 +242,7 @@ public class ScheduledTestsStarter {
     private String getReportAttachmentPath(long testID) {
 
         StringBuilder reportAttachmentPath = new StringBuilder()
-                .append(scheduledTestReportPath)
+                .append(applicationConfigProp.getScheduledTest().getReportPath())
                 .append(testID)
                 .append("\\")
                 .append(testID)
@@ -267,7 +255,7 @@ public class ScheduledTestsStarter {
     private String getHtmlLogAttachmentPath(long testID) {
 
         StringBuilder reportAttachmentPath = new StringBuilder()
-                .append(scheduledTestLogPath)
+                .append(applicationConfigProp.getScheduledTest().getLogPath())
                 .append(testID)
                 .append("\\")
                 .append(testID)

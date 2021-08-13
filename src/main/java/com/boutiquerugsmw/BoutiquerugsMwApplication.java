@@ -1,10 +1,9 @@
 package com.boutiquerugsmw;
 
 import com.boutiquerugsmw.model.SeleniumInstanceModel;
-import com.boutiquerugsmw.util.PropertyNames;
+import com.boutiquerugsmw.util.ApplicationConfigProp;
 import com.boutiquerugsmw.util.BrNodeMaps;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +20,7 @@ import java.util.Properties;
 @EnableScheduling
 @EnableMongoAuditing
 @EnableAsync
-public class BoutiquerugsMwApplication {
+public class BoutiquerugsMwApplication{
 
 	public static void main(String[] args) {
 		SpringApplication.run(BoutiquerugsMwApplication.class, args);
@@ -30,20 +29,8 @@ public class BoutiquerugsMwApplication {
 	@Autowired
 	private BrNodeMaps brNodeMaps;
 
-	@Value("#{${selenium.instances.ip.addresses}}")
-	private Map<String,String> seleniumInstancesIpAddresses;
-
-	@Value(PropertyNames.SELENIUM_HUB_IP_ADDRESS)
-	private String seleniumHubIpAddress;
-
-	@Value(PropertyNames.SELENIUM_INSTANCES_PORT)
-	private String seleniumInstancePort;
-
-	@Value(PropertyNames.FROM_EMAIL_ADDRESS)
-	private String fromEmailAddress;
-
-	@Value(PropertyNames.FROM_EMAIL_USER_PASSWORD)
-	private String fromEmailUserPassword;
+	@Autowired
+	private ApplicationConfigProp applicationConfigProp;
 
 	@Bean
 	public JavaMailSender getJavaMailSender() {
@@ -51,8 +38,8 @@ public class BoutiquerugsMwApplication {
 		mailSender.setHost("smtp.gmail.com");
 		mailSender.setPort(587);
 
-		mailSender.setUsername(fromEmailAddress);
-		mailSender.setPassword(fromEmailUserPassword);
+		mailSender.setUsername(applicationConfigProp.getScheduledTest().getFromEmailAddress().getUsername());
+		mailSender.setPassword(applicationConfigProp.getScheduledTest().getFromEmailAddress().getPassword());
 
 		Properties props = mailSender.getJavaMailProperties();
 		props.put("mail.transport.protocol", "smtp");
@@ -63,20 +50,20 @@ public class BoutiquerugsMwApplication {
 		return mailSender;
 	}
 
-	@Bean
-	public Map<String, SeleniumInstanceModel> SeleniumInstanceProfilesMap() {
+        @Bean
+        public Map<String, SeleniumInstanceModel> SeleniumInstanceProfilesMap() {
 
-		for (String key : this.seleniumInstancesIpAddresses.keySet())
-		{
-			brNodeMaps.getSeleniumInstancesMap().put(key, new SeleniumInstanceModel(
-					this.seleniumInstancesIpAddresses.get(key),
-					seleniumInstancePort,
-					key,
-					seleniumHubIpAddress,
-					true
-			));
-		}
-		return brNodeMaps.getSeleniumInstancesMap();
-	}
+            for (String key : applicationConfigProp.getSelenium().getInstances().getIpAddresses().keySet())
+            {
+                brNodeMaps.getSeleniumInstancesMap().put(key, new SeleniumInstanceModel(
+						applicationConfigProp.getSelenium().getInstances().getIpAddresses().get(key),
+						applicationConfigProp.getSelenium().getInstances().getPort(),
+                        key,
+						applicationConfigProp.getSelenium().getHub().getIpAddress(),
+                        true
+                ));
+            }
+            return brNodeMaps.getSeleniumInstancesMap();
+        }
 
 }

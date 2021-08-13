@@ -5,8 +5,8 @@ import com.boutiquerugsmw.model.ScheduledTestModel;
 import com.boutiquerugsmw.model.SeleniumInstanceModel;
 import com.boutiquerugsmw.repository.ScheduledTestsDao;
 import com.boutiquerugsmw.repository.ScheduledTestsRepository;
+import com.boutiquerugsmw.util.ApplicationConfigProp;
 import com.boutiquerugsmw.util.Constants;
-import com.boutiquerugsmw.util.PropertyNames;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +30,8 @@ public class ScheduledTestsDaoImpl implements ScheduledTestsDao {
 
     private static final Logger LOGGER = LogManager.getLogger(ScheduledTestsDaoImpl.class);
 
-    @Value(PropertyNames.TEST_RESULT_EMAIL_ADDRESS)
-    private String testResultEmailAddress;
+    @Autowired
+    private ApplicationConfigProp applicationConfigProp;
 
     @Autowired
     private ScheduledTestsRepository scheduledTestsRepository;
@@ -49,7 +49,7 @@ public class ScheduledTestsDaoImpl implements ScheduledTestsDao {
         scheduledTestModel.setTestId(testId);
         scheduledTestModel.setTestStartTime(testId);
         scheduledTestModel.setSeleniumInstanceModel(availableSeleniumInstance);
-        scheduledTestModel.setTestResultEmailAddress(testResultEmailAddress);
+        scheduledTestModel.setTestResultEmailAddress(applicationConfigProp.getScheduledTest().getResultEmailAddress());
         scheduledTestModel.setScenarioClassName(testScenarioClassName);
         scheduledTestModel.setTestParams(scheduledTestParams);
 

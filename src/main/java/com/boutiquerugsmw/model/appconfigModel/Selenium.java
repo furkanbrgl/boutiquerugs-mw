@@ -1,4 +1,4 @@
-package com.boutiquerugsmw.model.appconfig;
+package com.boutiquerugsmw.model.appconfigModel;
 
 public class Selenium {
 
