@@ -149,6 +149,19 @@ public class ScheduledTestsStarter {
 
             logger.error(e.getMessage(), e);
 
+            ScheduledTestsDao.updateScheduledTestStatus(Constants.SCENARIO_STATUS_FAILED, scheduledTestModel);
+            String detail = "There might be a couple of reasons for this failure. We are suspicious of not being able to send the test to nodes or nodes are could not have the test run";
+            mailContent = getFinalMailContent(mailContent, "",Constants.SCENARIO_STATUS_FAILED, detail);
+
+            this.mailUtil.sendMail(applicationConfigProp.getScheduledTest().getFromEmailAddress().getUsername(),
+                    new String[]{scheduledTestModel.getTestResultEmailAddress()},
+                    scheduledTestModel.getTestClassName() + " Scenario's finished. " + "Status : " + Constants.SCENARIO_STATUS_FAILED,
+                    mailContent, scheduledTestModel,
+                    new String[]{
+                            this.getReportAttachmentPath(scheduledTestModel.getTestId()),
+                            this.getHtmlLogAttachmentPath(scheduledTestModel.getTestId())
+                    });
+
         } finally {
 
 

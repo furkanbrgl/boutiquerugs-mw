@@ -42,7 +42,7 @@ public class LoginTestScheduler {
     @Autowired
     ApplicationConfigProp applicationConfigProp;
 
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(fixedDelay = 10000)
     public void initiateLoginTest() throws MessagingException {
         try {
             scheduledTestsStarter.startTest(this.getScheduledTest());
