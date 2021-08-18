@@ -45,7 +45,7 @@ public class LoginTestScheduler {
     @Scheduled(fixedDelay = 15000, initialDelay=5000)
     public void initiateLoginTest() throws MessagingException {
         try {
-//            scheduledTestsStarter.startTest(this.getScheduledTest());
+            scheduledTestsStarter.startTest(this.getScheduledTest());
         } catch (Exception e) {
         }
     }
