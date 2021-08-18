@@ -98,9 +98,9 @@ public class ScheduledTestsDaoImpl implements ScheduledTestsDao {
     @Override
     public int getTestAmountByTestNameAndTestStatus(String testName, String testStatus) {
 
-        List<ScheduledTestModel> list = scheduledTestsRepository.findByTestClassNameAndTestStatus(testName, testStatus);
+        int list = scheduledTestsRepository.countFindByTestClassNameAndTestStatus(testName, testStatus);
 
-        return list.size();
+        return list;
     }
 
 }

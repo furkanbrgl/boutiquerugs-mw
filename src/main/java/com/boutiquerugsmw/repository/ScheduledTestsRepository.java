@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ScheduledTestsRepository extends MongoRepository<ScheduledTestModel, Long> {
 
-    List<ScheduledTestModel> findByTestClassNameAndTestStatus(String testClassName, String testStatus);
+    int countFindByTestClassNameAndTestStatus(String testClassName, String testStatus);
 
 
 }
