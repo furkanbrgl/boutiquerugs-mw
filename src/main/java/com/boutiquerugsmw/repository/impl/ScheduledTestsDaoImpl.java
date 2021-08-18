@@ -10,7 +10,6 @@ import com.boutiquerugsmw.util.Constants;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -35,6 +34,7 @@ public class ScheduledTestsDaoImpl implements ScheduledTestsDao {
 
     @Autowired
     private ScheduledTestsRepository scheduledTestsRepository;
+
     @Autowired
     private MongoTemplate mongoTemplate;
 
@@ -93,6 +93,14 @@ public class ScheduledTestsDaoImpl implements ScheduledTestsDao {
     @Override
     public Optional<ScheduledTestModel> findById(long testId) {
         return scheduledTestsRepository.findById(testId);
+    }
+
+    @Override
+    public int getTestAmountByTestNameAndTestStatus(String testName, String testStatus) {
+
+        List<ScheduledTestModel> list = scheduledTestsRepository.findByTestClassNameAndTestStatus(testName, testStatus);
+
+        return list.size();
     }
 
 }

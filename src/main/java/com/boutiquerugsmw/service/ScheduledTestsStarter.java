@@ -62,7 +62,7 @@ public class ScheduledTestsStarter {
             logger.info("Test status is set to Running...Maven command will run .. ");
 
             String[] mvnCommand = this.generateMavenCommand(scheduledTestModel, scheduledTestModel.getSeleniumInstanceModel());
-
+            logger.info("MAVEN COMMAND ::: " + mvnCommand[2].toString());
             Process p = Runtime.getRuntime().exec(mvnCommand);
             br = new BufferedReader(new InputStreamReader(p.getInputStream()));
 

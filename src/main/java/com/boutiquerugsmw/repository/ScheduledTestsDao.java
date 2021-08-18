@@ -22,4 +22,7 @@ public interface ScheduledTestsDao {
     Object getLastNRecord(int LastNRecod);
 
     Optional<ScheduledTestModel> findById(long testId);
+
+    int getTestAmountByTestNameAndTestStatus(String testName, String testStatus);
+
 }
