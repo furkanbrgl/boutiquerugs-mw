@@ -169,6 +169,9 @@ public class ScheduledTestsStarter {
 
             brNodeMaps.getSeleniumInstancesMap().
                     get(scheduledTestModel.getSeleniumInstanceModel().getNodeTag()).setAvailable(true);
+            brNodeMaps.getSeleniumInstancesMap().
+                    get(scheduledTestModel.getSeleniumInstanceModel().getNodeTag()).setRunningTestId(000000L);
+
             logger.info(scheduledTestModel.getSeleniumInstanceModel().getNodeTag() + " has been released for future test :::::::::::.");
             try {
                 if (br != null) br.close();

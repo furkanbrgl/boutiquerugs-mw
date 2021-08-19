@@ -25,4 +25,5 @@ public interface ScheduledTestsDao {
 
     int getTestAmountByTestNameAndTestStatus(String testName, String testStatus);
 
+    ScheduledTestModel updateScheduledTestStatusByID(String scenarioStatusCompleted, long runningTestID);
 }

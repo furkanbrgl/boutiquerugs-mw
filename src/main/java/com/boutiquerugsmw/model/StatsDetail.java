@@ -4,17 +4,21 @@ public class StatsDetail {
 
 
     private int completedTest;
-    private int successfulTest;
+    private int waitingTest;
     private int failedTest;
     private int runningTest;
+    private int totalTestAmount;
+    private int unCompletedTest;
 
     @Override
     public String toString() {
         return "StatsDetail{" +
                 "completedTest=" + completedTest +
-                ", successfulTest=" + successfulTest +
+                ", waitingTest=" + waitingTest +
                 ", failedTest=" + failedTest +
                 ", runningTest=" + runningTest +
+                ", totalTestAmount=" + totalTestAmount +
+                ", uncompletedTest=" + unCompletedTest +
                 '}';
     }
 
@@ -26,12 +30,12 @@ public class StatsDetail {
         this.completedTest = completedTest;
     }
 
-    public int getSuccessfulTest() {
-        return successfulTest;
+    public int getWaitingTest() {
+        return waitingTest;
     }
 
-    public void setSuccessfulTest(int successfulTest) {
-        this.successfulTest = successfulTest;
+    public void setWaitingTest(int waitingTest) {
+        this.waitingTest = waitingTest;
     }
 
     public int getFailedTest() {
@@ -48,5 +52,21 @@ public class StatsDetail {
 
     public void setRunningTest(int runningTest) {
         this.runningTest = runningTest;
+    }
+
+    public int getTotalTestAmount() {
+        return totalTestAmount;
+    }
+
+    public void setTotalTestAmount(int totalTestAmount) {
+        this.totalTestAmount = totalTestAmount;
+    }
+
+    public int getUnCompletedTest() {
+        return unCompletedTest;
+    }
+
+    public void setUnCompletedTest(int unCompletedTest) {
+        this.unCompletedTest = unCompletedTest;
     }
 }

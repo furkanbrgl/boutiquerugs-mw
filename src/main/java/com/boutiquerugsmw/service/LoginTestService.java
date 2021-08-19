@@ -5,6 +5,7 @@ import com.boutiquerugsmw.model.StatsDetail;
 import com.boutiquerugsmw.model.TestStatsDTO;
 import com.boutiquerugsmw.repository.impl.ScheduledTestsDaoImpl;
 import com.boutiquerugsmw.util.ApplicationConfigProp;
+import com.boutiquerugsmw.util.Constants;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +32,13 @@ public class LoginTestService {
 
     public TestStatsDTO getLoginTestStats() {
 
-        int runningTest = scheduledTestsRepository.getTestAmountByTestNameAndTestStatus(applicationConfigProp.getScenarios().getLoginTest(), "RUNNING");
-        int successfulTest = scheduledTestsRepository.getTestAmountByTestNameAndTestStatus(applicationConfigProp.getScenarios().getLoginTest(), "SUCCESSFUL");
-        int failedTest = scheduledTestsRepository.getTestAmountByTestNameAndTestStatus(applicationConfigProp.getScenarios().getLoginTest(), "FAILED");
-        int completedTest = scheduledTestsRepository.getTestAmountByTestNameAndTestStatus(applicationConfigProp.getScenarios().getLoginTest(), "COMPLETED");
+        int runningTest = scheduledTestsRepository.getTestAmountByTestNameAndTestStatus(applicationConfigProp.getScenarios().getLoginTest(), Constants.SCENARIO_STATUS_RUNNING);
+        int waitingTest = scheduledTestsRepository.getTestAmountByTestNameAndTestStatus(applicationConfigProp.getScenarios().getLoginTest(), Constants.SCENARIO_STATUS_WAITING);
+        int failedTest = scheduledTestsRepository.getTestAmountByTestNameAndTestStatus(applicationConfigProp.getScenarios().getLoginTest(), Constants.SCENARIO_STATUS_FAILED);
+        int completedTest = scheduledTestsRepository.getTestAmountByTestNameAndTestStatus(applicationConfigProp.getScenarios().getLoginTest(), Constants.SCENARIO_STATUS_COMPLETED);
+        int uncompletedTest = scheduledTestsRepository.getTestAmountByTestNameAndTestStatus(applicationConfigProp.getScenarios().getLoginTest(), Constants.SCENARIO_STATUS_UNCOMPLETED);
+
+        int totalTest = runningTest + waitingTest + failedTest + completedTest + uncompletedTest;
 
         TestStatsDTO dto = new TestStatsDTO();
         StatsDetail detail = new StatsDetail();
@@ -42,12 +46,14 @@ public class LoginTestService {
         detail.setFailedTest(failedTest);
         detail.setRunningTest(runningTest);
         detail.setCompletedTest(completedTest);
-        detail.setSuccessfulTest(successfulTest);
+        detail.setWaitingTest(waitingTest);
+        detail.setTotalTestAmount(totalTest);
+        detail.setUnCompletedTest(uncompletedTest);
 
         dto.setTestName(applicationConfigProp.getScenarios().getLoginTest());
         dto.setUpdateTime(System.currentTimeMillis());
         dto.setStatsDetail(detail);
-        LOGGER.info("Stats are going through");
+        LOGGER.info("Stats are going through For " + applicationConfigProp.getScenarios().getLoginTest());
 
         return dto;
     }

@@ -1,8 +1,13 @@
 package com.boutiquerugsmw;
 
+import com.boutiquerugsmw.model.ScheduledTestModel;
 import com.boutiquerugsmw.model.SeleniumInstanceModel;
+import com.boutiquerugsmw.repository.ScheduledTestsDao;
 import com.boutiquerugsmw.util.ApplicationConfigProp;
 import com.boutiquerugsmw.util.BrNodeMaps;
+import com.boutiquerugsmw.util.Constants;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,6 +18,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import javax.annotation.PreDestroy;
 import java.util.Map;
 import java.util.Properties;
 
@@ -21,6 +27,9 @@ import java.util.Properties;
 @EnableMongoAuditing
 @EnableAsync
 public class BoutiquerugsMwApplication{
+
+	private static final Logger LOGGER = LogManager.getLogger(BoutiquerugsMwApplication.class);
+
 
 	public static void main(String[] args) {
 		SpringApplication.run(BoutiquerugsMwApplication.class, args);
@@ -31,6 +40,21 @@ public class BoutiquerugsMwApplication{
 
 	@Autowired
 	private ApplicationConfigProp applicationConfigProp;
+
+	@Autowired
+	private ScheduledTestsDao ScheduledTestsDao;
+
+	@PreDestroy
+	public void onExit() {
+		LOGGER.info("### BOUTIQUE RUGS MIDDLEWARE STOPPING ###");
+		for (String key : applicationConfigProp.getSelenium().getInstances().getIpAddresses().keySet()) {
+			SeleniumInstanceModel instance = brNodeMaps.getSeleniumInstancesMap().get(key);
+			long runningTestID = instance.getRunningTestId();
+			ScheduledTestModel testModel = ScheduledTestsDao.updateScheduledTestStatusByID(Constants.SCENARIO_STATUS_COMPLETED, runningTestID);
+
+			LOGGER.info("### " + runningTestID + " has been pulled into UNCOMPLETED test.");
+		}
+	}
 
 	@Bean
 	public JavaMailSender getJavaMailSender() {
@@ -50,13 +74,13 @@ public class BoutiquerugsMwApplication{
 		return mailSender;
 	}
 
-        @Bean
-        public Map<String, SeleniumInstanceModel> SeleniumInstanceProfilesMap() {
+	@Bean
+    public Map<String, SeleniumInstanceModel> SeleniumInstanceProfilesMap() {
 
             for (String key : applicationConfigProp.getSelenium().getInstances().getIpAddresses().keySet())
             {
                 brNodeMaps.getSeleniumInstancesMap().put(key, new SeleniumInstanceModel(
-						applicationConfigProp.getSelenium().getInstances().getIpAddresses().get(key),
+						applicationConfigProp.getSelenium().getInstances().getIpAddresses().get(key), 000000L,
 						applicationConfigProp.getSelenium().getInstances().getPort(),
                         key,
 						applicationConfigProp.getSelenium().getHub().getIpAddress(),

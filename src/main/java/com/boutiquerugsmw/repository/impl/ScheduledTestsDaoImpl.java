@@ -47,7 +47,7 @@ public class ScheduledTestsDaoImpl implements ScheduledTestsDao {
         ScheduledTestModel scheduledTestModel = new ScheduledTestModel();
 
         scheduledTestModel.setTestId(testId);
-        scheduledTestModel.setTestStartTime(testId);
+        scheduledTestModel.setTestStartTime(System.currentTimeMillis());
         scheduledTestModel.setSeleniumInstanceModel(availableSeleniumInstance);
         scheduledTestModel.setTestResultEmailAddress(applicationConfigProp.getScheduledTest().getResultEmailAddress());
         scheduledTestModel.setScenarioClassName(testScenarioClassName);
@@ -98,9 +98,20 @@ public class ScheduledTestsDaoImpl implements ScheduledTestsDao {
     @Override
     public int getTestAmountByTestNameAndTestStatus(String testName, String testStatus) {
 
-        int list = scheduledTestsRepository.countFindByTestClassNameAndTestStatus(testName, testStatus);
+        int size = scheduledTestsRepository.countFindByTestClassNameAndTestStatus(testName, testStatus);
 
-        return list;
+        return size;
+    }
+
+    @Override
+    public ScheduledTestModel updateScheduledTestStatusByID(String scenarioStatusCompleted, long runningTestID) {
+
+        Optional<ScheduledTestModel> model = scheduledTestsRepository.findById(runningTestID);
+        model.get().setTestStatus(Constants.SCENARIO_STATUS_UNCOMPLETED);
+
+        scheduledTestsRepository.save(model.get());
+
+        return model.get();
     }
 
 }

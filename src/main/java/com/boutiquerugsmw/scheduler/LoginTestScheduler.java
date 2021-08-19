@@ -42,7 +42,7 @@ public class LoginTestScheduler {
     @Autowired
     ApplicationConfigProp applicationConfigProp;
 
-    @Scheduled(fixedDelay = 15000, initialDelay=5000)
+    @Scheduled(fixedDelay = 10000, initialDelay=5000)
     public void initiateLoginTest() throws MessagingException {
         try {
             scheduledTestsStarter.startTest(this.getScheduledTest());
@@ -51,7 +51,7 @@ public class LoginTestScheduler {
     }
 
 
-    private SeleniumInstanceModel getAvailableSeleniumInstance() throws Exception {
+    private SeleniumInstanceModel getAvailableSeleniumInstance(long testId) throws Exception {
 
         for (Map.Entry<String,SeleniumInstanceModel> SIntanceMap : brNodeMaps.getSeleniumInstancesMap().entrySet())
         {
@@ -59,6 +59,7 @@ public class LoginTestScheduler {
                 if(brNodeStatus.isNodeReachable(SIntanceMap.getValue().getIpAddress())){
                     log.info("Available Node :::: Key = " + SIntanceMap.getKey() +", Value = " + SIntanceMap.getValue().toString());
                     SIntanceMap.getValue().setAvailable(false);
+                    SIntanceMap.getValue().setRunningTestId(testId);
                     return SIntanceMap.getValue();
                 }
             }
@@ -69,11 +70,11 @@ public class LoginTestScheduler {
 
     private ScheduledTestModel getScheduledTest() throws Exception {
 
-        long testId = System.currentTimeMillis();
+        long testId = System.currentTimeMillis() * 10000;
 
         return scheduledTestsRepository.getScheduledTests(testId,
                 applicationConfigProp.getScenarios().getLoginTest(),
-                this.getAvailableSeleniumInstance(),
+                this.getAvailableSeleniumInstance(testId),
                 this.getScheduledTestParams(testId));
     }
 
