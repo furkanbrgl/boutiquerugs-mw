@@ -14,7 +14,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,8 +23,6 @@ import java.util.Map;
 public class LoginTestScheduler {
 
     private static final Logger log = LoggerFactory.getLogger(LoginTestScheduler.class);
-
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     @Autowired
     private BrNodeMaps brNodeMaps;
@@ -55,9 +52,10 @@ public class LoginTestScheduler {
 
         for (Map.Entry<String,SeleniumInstanceModel> SIntanceMap : brNodeMaps.getSeleniumInstancesMap().entrySet())
         {
-            if(SIntanceMap.getValue().isAvailable()){
+            if(SIntanceMap.getValue().isReachable()){
                 if(brNodeStatus.isNodeReachable(SIntanceMap.getValue().getIpAddress())){
                     log.info("Available Node :::: Key = " + SIntanceMap.getKey() +", Value = " + SIntanceMap.getValue().toString());
+                    SIntanceMap.getValue().setReachable(true);
                     SIntanceMap.getValue().setAvailable(false);
                     SIntanceMap.getValue().setRunningTestId(testId);
                     return SIntanceMap.getValue();

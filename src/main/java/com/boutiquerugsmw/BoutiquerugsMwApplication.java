@@ -44,18 +44,6 @@ public class BoutiquerugsMwApplication{
 	@Autowired
 	private ScheduledTestsDao ScheduledTestsDao;
 
-	@PreDestroy
-	public void onExit() {
-		LOGGER.info("### BOUTIQUE RUGS MIDDLEWARE STOPPING ###");
-		for (String key : applicationConfigProp.getSelenium().getInstances().getIpAddresses().keySet()) {
-			SeleniumInstanceModel instance = brNodeMaps.getSeleniumInstancesMap().get(key);
-			long runningTestID = instance.getRunningTestId();
-			ScheduledTestModel testModel = ScheduledTestsDao.updateScheduledTestStatusByID(Constants.SCENARIO_STATUS_COMPLETED, runningTestID);
-
-			LOGGER.info("### " + runningTestID + " has been pulled into UNCOMPLETED test.");
-		}
-	}
-
 	@Bean
 	public JavaMailSender getJavaMailSender() {
 		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
@@ -84,10 +72,23 @@ public class BoutiquerugsMwApplication{
 						applicationConfigProp.getSelenium().getInstances().getPort(),
                         key,
 						applicationConfigProp.getSelenium().getHub().getIpAddress(),
-                        true
+                        true,
+						true
                 ));
             }
             return brNodeMaps.getSeleniumInstancesMap();
         }
+
+	@PreDestroy
+	public void onExit() {
+		LOGGER.info("### BOUTIQUE RUGS MIDDLEWARE STOPPING ###");
+		for (String key : applicationConfigProp.getSelenium().getInstances().getIpAddresses().keySet()) {
+			SeleniumInstanceModel instance = brNodeMaps.getSeleniumInstancesMap().get(key);
+			long runningTestID = instance.getRunningTestId();
+			ScheduledTestModel testModel = ScheduledTestsDao.updateScheduledTestStatusByID(Constants.SCENARIO_STATUS_COMPLETED, runningTestID);
+
+			LOGGER.info("### " + runningTestID + " has been pulled into UNCOMPLETED test.");
+		}
+	}
 
 }

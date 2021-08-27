@@ -7,7 +7,6 @@ import com.boutiquerugsmw.repository.impl.ScheduledTestsDaoImpl;
 import com.boutiquerugsmw.util.*;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -168,7 +167,7 @@ public class ScheduledTestsStarter {
             logger.info(mavenLog.toString());
 
             brNodeMaps.getSeleniumInstancesMap().
-                    get(scheduledTestModel.getSeleniumInstanceModel().getNodeTag()).setAvailable(true);
+                    get(scheduledTestModel.getSeleniumInstanceModel().getNodeTag()).setReachable(true);
             brNodeMaps.getSeleniumInstancesMap().
                     get(scheduledTestModel.getSeleniumInstanceModel().getNodeTag()).setRunningTestId(000000L);
 

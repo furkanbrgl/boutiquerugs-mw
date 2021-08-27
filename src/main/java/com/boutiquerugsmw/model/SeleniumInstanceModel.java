@@ -8,14 +8,24 @@ public class SeleniumInstanceModel {
     private String nodeTag;
     private String hostId;
     private boolean available;
+    private boolean reachable;
 
-    public SeleniumInstanceModel(String ipAddress, long runningTestId, String port, String nodeTag, String hostId, boolean available) {
+    public SeleniumInstanceModel(String ipAddress, long runningTestId, String port, String nodeTag, String hostId, boolean available, boolean reachable) {
         this.ipAddress = ipAddress;
         this.runningTestId = runningTestId;
         this.port = port;
         this.nodeTag = nodeTag;
         this.hostId = hostId;
         this.available = available;
+        this.reachable = reachable;
+    }
+
+    public boolean isReachable() {
+        return reachable;
+    }
+
+    public void setReachable(boolean reachable) {
+        this.reachable = reachable;
     }
 
     public String getIpAddress() {
@@ -76,6 +86,7 @@ public class SeleniumInstanceModel {
                 ", nodeTag='" + nodeTag + '\'' +
                 ", hostId='" + hostId + '\'' +
                 ", available=" + available +
+                ", reachable=" + reachable +
                 '}';
     }
 }
