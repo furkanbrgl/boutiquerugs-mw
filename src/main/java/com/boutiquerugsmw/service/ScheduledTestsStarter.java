@@ -167,7 +167,7 @@ public class ScheduledTestsStarter {
             logger.info(mavenLog.toString());
 
             brNodeMaps.getSeleniumInstancesMap().
-                    get(scheduledTestModel.getSeleniumInstanceModel().getNodeTag()).setReachable(true);
+                    get(scheduledTestModel.getSeleniumInstanceModel().getNodeTag()).setAvailable(true);
             brNodeMaps.getSeleniumInstancesMap().
                     get(scheduledTestModel.getSeleniumInstanceModel().getNodeTag()).setRunningTestId(000000L);
 

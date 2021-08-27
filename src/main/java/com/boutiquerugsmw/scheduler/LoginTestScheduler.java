@@ -52,7 +52,7 @@ public class LoginTestScheduler {
 
         for (Map.Entry<String,SeleniumInstanceModel> SIntanceMap : brNodeMaps.getSeleniumInstancesMap().entrySet())
         {
-            if(SIntanceMap.getValue().isReachable()){
+            if(SIntanceMap.getValue().isReachable() && SIntanceMap.getValue().isAvailable()){
                 if(brNodeStatus.isNodeReachable(SIntanceMap.getValue().getIpAddress())){
                     log.info("Available Node :::: Key = " + SIntanceMap.getKey() +", Value = " + SIntanceMap.getValue().toString());
                     SIntanceMap.getValue().setReachable(true);
