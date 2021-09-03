@@ -21,6 +21,14 @@ public class ExceptionsHandler {
         return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(ApiException ex) {
+        ErrorType errorType = ex.getErrorType();
+        ErrorResponse errorResponse =  new ErrorResponse(errorType.getErrorStatus(), ex.getMessage(), ex.getMessage());
+        return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse);
+    }
+
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         List<String> errors = ex.getBindingResult().getAllErrors().stream()

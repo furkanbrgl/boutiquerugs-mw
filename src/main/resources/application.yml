@@ -34,6 +34,7 @@ app:
         node_2: 192.168.86.27
     hub:
       ipAddress: "http://192.168.86.33:4444/wd/hub"
+      port: "4444"
 
   boutiqueRugsUser:
     email: "boutiquerugstest@gmail.com"
