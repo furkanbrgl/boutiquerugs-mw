@@ -104,7 +104,7 @@ public class SeleniumService {
        Elements elements = doc.getElementsByClass("proxyid");
 
         elements.forEach(e -> {
-            instances.add(e.toString().substring(31, e.toString().length() - 16));
+            instances.add(e.toString().substring(31, e.toString().length() - 21));
         });
 
         return instances;

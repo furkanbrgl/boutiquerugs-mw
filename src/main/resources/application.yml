@@ -31,10 +31,12 @@ app:
       port: 5555
       ipAddresses:
         node_1: 192.168.86.36
-        node_2: 192.168.86.27
+        node_2: 192.168.86.48
+        node_3: 192.168.86.361
+
     hub:
-      ipAddress: "http://192.168.86.33:4444/wd/hub"
-      port: "4444"
+      ipAddress: 192.168.86.33
+      port: 4444
 
   boutiqueRugsUser:
     email: "boutiquerugstest@gmail.com"

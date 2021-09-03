@@ -62,8 +62,7 @@ public class LoginTestScheduler {
                 }
             }
         }
-        log.info("Available Node Could Not Be Found ::: ");
-        throw new Exception("Available Node Could Not Be Found");
+        throw new Exception("Available Node Could Not Be Found :::");
     }
 
     private ScheduledTestModel getScheduledTest() throws Exception {

@@ -32,18 +32,18 @@ public class SeleniumController {
         return seleniumService.getSessionsByNodeIp(nodeIp);
     }
 
-    @PostMapping(value = "/getNodesByHubIp")
-    @ResponseStatus(HttpStatus.OK)
-    public List<String> getSeleniumNodesByHubIp(@RequestBody String hubIp) throws Exception {
-        LOGGER.info("Entering in rest endpoint to get Selenium Node (" + hubIp + ") Instances");
-        return seleniumService.getSeleniumNodesByHubIp(hubIp);
-    }
-
     @DeleteMapping("/deleteSessionByNodeIp/{sessionId}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteSessionByNodeIp(@PathVariable String sessionId, @RequestBody String nodeIp) {
         LOGGER.info("Entering in rest endpoint to get Selenium (" + nodeIp + ") Delete Sessions for " + sessionId);
         seleniumService.deleteSessionByNodeIp(sessionId, nodeIp);
+    }
+
+    @PostMapping(value = "/getNodesByHubIp")
+    @ResponseStatus(HttpStatus.OK)
+    public List<String> getSeleniumNodesByHubIp(@RequestBody String hubIp) throws Exception {
+        LOGGER.info("Entering in rest endpoint to get Selenium Node (" + hubIp + ") Instances");
+        return seleniumService.getSeleniumNodesByHubIp(hubIp);
     }
 
     @PostMapping(value = "/nodeWellBeingByNodeIp")
